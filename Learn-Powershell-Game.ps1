@@ -1,7 +1,28 @@
-# Register a handler for Control+C
+# Allows game exit via the Control+C key combination
 trap {
     Write-Host "Exiting the game. Thanks for playing!"
     exit
+}
+
+# Welcome banner
+function Show-Banner {
+    $colors = @('Red', 'Yellow', 'Green', 'Cyan', 'Blue', 'Magenta')
+    $bannerLines = @(
+        "                                      ######                               #####                              ",
+        "#      ######   ##   #####  #    #    #     #  ####  #    # ###### #####  #     # #    # ###### #      #      ",
+        "#      #       #  #  #    # ##   #    #     # #    # #    # #      #    # #       #    # #      #      #      ",
+        "#      #####  #    # #    # # #  #    ######  #    # #    # #####  #    #  #####  ###### #####  #      #      ",
+        "#      #      ###### #####  #  # #    #       #    # # ## # #      #####        # #    # #      #      #      ",
+        "#      #      #    # #   #  #   ##    #       #    # ##  ## #      #   #  #     # #    # #      #      #      ",
+        "###### ###### #    # #    # #    #    #        ####  #    # ###### #    #  #####  #    # ###### ###### ######"
+    )
+
+    for ($i = 0; $i -lt $bannerLines.Length; $i++) {
+        $color = $colors[$i % $colors.Length]
+        Write-Host $bannerLines[$i] -ForegroundColor $color
+    }
+    Write-Host "Welcome to the Learn PowerShell Game - a simple game to help remember key Powershell cmdlets!" -ForegroundColor Cyan
+    Write-Host "---------------------------------------------------------------------------------------------" -ForegroundColor Gray
 }
 
 # Function to display instructions
@@ -15,7 +36,7 @@ function Show-Instructions {
     Write-Host "Let's begin!"
 }
 
-# Define tasks
+# Define tasks [Mike to build out more]
 $tasks = @(
     @{ Question = "How do you display the current directory?"; Answers = @("Get-Location", "pwd"); Command = "Get-Location"; Hint = "It's similar to the pwd command in Unix." },
     @{ Question = "How do you display the contents of the directory?"; Answers = @("Get-ChildItem", "ls", "dir"); Command = "Get-ChildItem"; Hint = "This command is equivalent to 'ls' in Unix or 'dir' in CMD." },
@@ -30,7 +51,7 @@ $tasks = @(
     @{ Question = "How do you copy a file? (e.g., from 'source.txt' to 'destination.txt')"; Answers = @("Copy-Item source.txt -Destination destination.txt"); Command = "Write-Host 'Copying file from source.txt to destination.txt... (simulated)'"; Hint = "Use Copy-Item and specify the source and destination paths." }
 )
 
-# Function to perform a task
+# Function for actioning tasks
 function Perform-Task {
     param ($task)
     $attempts = 0
@@ -55,6 +76,7 @@ function Perform-Task {
 
 # Main function to start the game
 function Start-Game {
+    Show-Banner
     Show-Instructions
     $shuffledTasks = Get-Random -InputObject $tasks -Count $tasks.Length
     foreach ($task in $shuffledTasks) {
